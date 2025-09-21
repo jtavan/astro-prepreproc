@@ -1,0 +1,44 @@
+monitor:
+  root_path: ./test
+  poll_interval: 2.0
+  recursive: true
+  include_patterns:
+    - "*.fits"
+    - "*.cr2"
+    - "*.cr3"
+    - "*.xisf"
+  exclude_patterns:
+    - ".*.tmp"
+actions:
+  - name: log-new-data
+    module: prepreproc.sample_actions
+    function: log_event
+    trigger:
+      type: event
+    options:
+      level: INFO
+      message: "New astrophotography data"
+  - name: nightly-summary
+    module: prepreproc.sample_actions
+    function: summarize_directory
+    trigger:
+      type: daily
+      time: "08:30"
+    options:
+      level: INFO
+      min_count: 1
+  - name: added-files-summary
+    module: prepreproc.sample_actions
+    function: summarize_added_files
+    trigger:
+      type: minutely
+#      minute: 15
+    options:
+      level: INFO
+  - name: list-new-files
+    module: prepreproc.sample_actions
+    function: run_shell_command
+    trigger:
+      type: event
+    options:
+      command: "cd {directory} && ls -l {filename}"
