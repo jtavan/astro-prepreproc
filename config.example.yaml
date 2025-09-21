@@ -7,6 +7,7 @@ monitor:
     - "*.cr2"
     - "*.cr3"
     - "*.xisf"
+    - "*.nef"
   exclude_patterns:
     - ".*.tmp"
 actions:
@@ -31,8 +32,8 @@ actions:
     module: prepreproc.sample_actions
     function: summarize_added_files
     trigger:
-      type: minutely
-#      minute: 15
+      type: hourly
+      minute: 15
     options:
       level: INFO
   - name: list-new-files
@@ -42,3 +43,10 @@ actions:
       type: event
     options:
       command: "cd {directory} && ls -l {filename}"
+  - name: list-old-files
+    module: prepreproc.cleanup_actions
+    function: list_old_files
+    trigger:
+      type: daily
+    options:
+      threshold_days: 14
